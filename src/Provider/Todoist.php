@@ -88,15 +88,13 @@ class Todoist extends AbstractProvider
     {
         // "openid" MUST be the first scope in the list.
         return [
-            'openid',
-            'email',
-            'profile',
+            'data:read_write',
         ];
     }
 
     protected function getScopeSeparator(): string
     {
-        return ' ';
+        return ',';
     }
 
     protected function checkResponse(ResponseInterface $response, $data): void
