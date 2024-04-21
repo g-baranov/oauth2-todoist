@@ -48,7 +48,8 @@ class Todoist extends AbstractProvider
 
     public function getResourceOwnerDetailsUrl(AccessToken $token): string
     {
-        return "https://api.todoist.com/sync/v8/sync?token={$token->getToken()}&sync_token=*&resource_types=[\"user\"]";
+        // 'get user' method doesn't exist. Will use 'get projects' method to check the auth.
+        return "https://api.todoist.com/rest/v2/projects";
     }
 
     protected function getDefaultScopes(): array
