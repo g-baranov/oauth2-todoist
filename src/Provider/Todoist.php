@@ -51,39 +51,6 @@ class Todoist extends AbstractProvider
         return "https://api.todoist.com/sync/v8/sync?token={$token->getToken()}&sync_token=*&resource_types=[\"user\"]";
     }
 
-    protected function getAuthorizationParameters(array $options): array
-    {
-        if (empty($options['hd']) && $this->hostedDomain) {
-            $options['hd'] = $this->hostedDomain;
-        }
-
-        if (empty($options['access_type']) && $this->accessType) {
-            $options['access_type'] = $this->accessType;
-        }
-
-        if (empty($options['prompt']) && $this->prompt) {
-            $options['prompt'] = $this->prompt;
-        }
-
-        // Default scopes MUST be included for OpenID Connect.
-        // Additional scopes MAY be added by constructor or option.
-        $scopes = array_merge($this->getDefaultScopes(), $this->scopes);
-
-        if (!empty($options['scope'])) {
-            $scopes = array_merge($scopes, $options['scope']);
-        }
-
-        $options['scope'] = array_unique($scopes);
-
-        $options = parent::getAuthorizationParameters($options);
-
-        // The "approval_prompt" MUST be removed as it is not supported by Google, use "prompt" instead:
-        // https://developers.google.com/identity/protocols/oauth2/openid-connect#prompt
-        unset($options['approval_prompt']);
-
-        return $options;
-    }
-
     protected function getDefaultScopes(): array
     {
         // "openid" MUST be the first scope in the list.
@@ -97,56 +64,21 @@ class Todoist extends AbstractProvider
         return ',';
     }
 
-    protected function checkResponse(ResponseInterface $response, $data): void
-    {
-        // @codeCoverageIgnoreStart
-        if (empty($data['error'])) {
-            return;
-        }
-        // @codeCoverageIgnoreEnd
-
-        $code = 0;
-        $error = $data['error'];
-
-        if (is_array($error)) {
-            $code = $error['code'];
-            $error = $error['message'];
-        }
-
-        throw new IdentityProviderException($error, $code, $data);
-    }
-
     protected function createResourceOwner(array $response, AccessToken $token): TodoistUser
     {
-        $user = new TodoistUser($response);
-
-        $this->assertMatchingDomain($user->getHostedDomain());
-
-        return $user;
+        return new TodoistUser($response); // MOCK USER
     }
 
-    /**
-     * @param string|null $hostedDomain
-     *
-     * @throws HostedDomainException If the domain does not match the configured domain.
-     */
-    protected function assertMatchingDomain(?string $hostedDomain): void
+    protected function checkResponse(ResponseInterface $response, $data)
     {
-        if ($this->hostedDomain === null) {
-            // No hosted domain configured.
+        if ($response->getStatusCode() == 200) {
             return;
         }
 
-        if ($this->hostedDomain === '*' && $hostedDomain) {
-            // Any hosted domain is allowed.
-            return;
-        }
-
-        if ($this->hostedDomain === $hostedDomain) {
-            // Hosted domain is correct.
-            return;
-        }
-
-        throw HostedDomainException::notMatchingDomain($this->hostedDomain);
+        throw new IdentityProviderException(
+            json_encode($data),
+            $response->getStatusCode(),
+            (string) $response->getBody()
+        );
     }
 }

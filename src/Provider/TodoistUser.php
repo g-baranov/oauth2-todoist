@@ -5,9 +5,14 @@ namespace GBaranov\OAuth2Todoist\Provider;
 use League\OAuth2\Client\Provider\ResourceOwnerInterface;
 use League\OAuth2\Client\Tool\ArrayAccessorTrait;
 
+/**
+ * REST API DOESN'T support 'user' method. You should use Sync API
+ * @see https://developer.todoist.com/sync
+ */
 class TodoistUser implements ResourceOwnerInterface
 {
     use ArrayAccessorTrait;
+
     /**
      * Raw response
      *
@@ -20,7 +25,7 @@ class TodoistUser implements ResourceOwnerInterface
      *
      * @param array  $response
      */
-    public function __construct(array $response = array())
+    public function __construct(array $response = [])
     {
         $this->response = $response;
     }
@@ -32,17 +37,8 @@ class TodoistUser implements ResourceOwnerInterface
      */
     public function getId()
     {
-        return $this->getValueByKey($this->response, 'account_id');
-    }
-
-    /**
-     * Get resource owner name
-     *
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->getValueByKey($this->response, 'name.display_name');
+//        return $this->getValueByKey($this->response, 'account_id');
+        return 'MOCK_USER_ID';
     }
 
     /**
@@ -52,6 +48,8 @@ class TodoistUser implements ResourceOwnerInterface
      */
     public function toArray()
     {
-        return $this->response;
+        return [
+            'id' => $this->getId(),
+        ];
     }
 }
