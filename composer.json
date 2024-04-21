@@ -1,5 +1,5 @@
 {
-    "name": "artisangora/oauth2-todoist",
+    "name": "g-baranov/oauth2-todoist",
     "description": "Todoist OAuth 2.0 Client Provider for The PHP League OAuth2-Client",
     "license": "MIT",
     "keywords": [
@@ -22,12 +22,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Artisangora\\OAuth2Todoist\\": "src/"
+            "GBaranov\\OAuth2Todoist\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Artisangora\\OAuth2Todoist\\Tests\\": "tests/"
+            "GBaranov\\OAuth2Todoist\\Tests\\": "tests/"
         }
     }
 }

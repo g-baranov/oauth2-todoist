@@ -1,6 +1,6 @@
 <?php
 
-namespace Artisangora\OAuth2Todoist\Provider;
+namespace GBaranov\OAuth2Todoist\Provider;
 
 use League\OAuth2\Client\Exception\HostedDomainException;
 use League\OAuth2\Client\Provider\AbstractProvider;
@@ -48,7 +48,7 @@ class Todoist extends AbstractProvider
 
     public function getResourceOwnerDetailsUrl(AccessToken $token): string
     {
-        return 'https://api.todoist.com/rest/v2/projects'; //todo
+        return "https://api.todoist.com/sync/v8/sync?token={$token->getToken()}&sync_token=*&resource_types=[\"user\"]";
     }
 
     protected function getAuthorizationParameters(array $options): array

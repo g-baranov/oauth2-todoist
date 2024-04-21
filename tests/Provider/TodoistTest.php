@@ -1,8 +1,8 @@
 <?php
 
-namespace Artisangora\OAuth2Todoist\Tests\Provider;
+namespace GBaranov\OAuth2Todoist\Tests\Provider;
 
-use Artisangora\OAuth2Todoist\Provider\Todoist;
+use GBaranov\OAuth2Todoist\Provider\Todoist;
 use League\OAuth2\Client\Tool\QueryBuilderTrait;
 use Mockery as m;
 use PHPUnit\Framework\TestCase;
